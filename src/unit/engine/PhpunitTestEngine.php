@@ -52,7 +52,7 @@ final class PhpunitTestEngine extends ArcanistUnitTestEngine {
       if (!Filesystem::pathExists($test_path)) {
         continue;
       }
-      $json_tmp = new TempFile();
+      $xml_tmp = new TempFile();
       $clover_tmp = null;
       $clover = null;
       if ($this->getEnableCoverage() !== false) {
@@ -64,10 +64,10 @@ final class PhpunitTestEngine extends ArcanistUnitTestEngine {
 
       $stderr = '-d display_errors=stderr';
 
-      $futures[$test_path] = new ExecFuture('%C %C %C --log-json %s %C %s',
-        $this->phpunitBinary, $config, $stderr, $json_tmp, $clover, $test_path);
+      $futures[$test_path] = new ExecFuture('%C %C %C --log-junit %s %C %s',
+        $this->phpunitBinary, $config, $stderr, $xml_tmp, $clover, $test_path);
       $tmpfiles[$test_path] = array(
-        'json' => $json_tmp,
+        'xml' => $xml_tmp,
         'clover' => $clover_tmp,
       );
     }
@@ -81,7 +81,7 @@ final class PhpunitTestEngine extends ArcanistUnitTestEngine {
 
       $results[] = $this->parseTestResults(
         $test,
-        $tmpfiles[$test]['json'],
+        $tmpfiles[$test]['xml'],
         $tmpfiles[$test]['clover'],
         $stderr);
     }
@@ -90,17 +90,17 @@ final class PhpunitTestEngine extends ArcanistUnitTestEngine {
   }
 
   /**
-   * Parse test results from phpunit json report.
+   * Parse test results from phpunit XML report.
    *
    * @param string $path Path to test
-   * @param string $json_tmp Path to phpunit json report
+   * @param string $xml_tmp Path to phpunit XML report
    * @param string $clover_tmp Path to phpunit clover report
    * @param string $stderr Data written to stderr
    *
    * @return array
    */
-  private function parseTestResults($path, $json_tmp, $clover_tmp, $stderr) {
-    $test_results = Filesystem::readFile($json_tmp);
+  private function parseTestResults($path, $xml_tmp, $clover_tmp, $stderr) {
+    $test_results = Filesystem::readFile($xml_tmp);
     return id(new ArcanistPhpunitTestResultParser())
       ->setEnableCoverage($this->getEnableCoverage())
       ->setProjectRoot($this->projectRoot)
