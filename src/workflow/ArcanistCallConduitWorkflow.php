@@ -60,12 +60,6 @@ EOTEXT
     }
     $method = reset($method);
 
-    $console = PhutilConsole::getConsole();
-    if (!function_exists('posix_isatty') || posix_isatty(STDIN)) {
-      $console->writeErr(
-        "%s\n",
-        pht('Waiting for JSON parameters on stdin...'));
-    }
     $params = @file_get_contents('php://stdin');
     try {
       $params = phutil_json_decode($params);
