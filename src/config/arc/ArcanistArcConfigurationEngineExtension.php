@@ -125,7 +125,7 @@ final class ArcanistArcConfigurationEngineExtension
             'no "--onto" flag.'))
         ->setExamples(
           array(
-            '["master"]',
+            '["main"]',
           )),
       id(new ArcanistStringListConfigOption())
         ->setKey('pager')

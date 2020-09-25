@@ -1126,7 +1126,7 @@ final class ArcanistGitLandEngine
       return $remote_onto;
     }
 
-    $default_onto = 'master';
+    $default_onto = 'main';
 
     $log->writeStatus(
       pht('ONTO TARGET'),
