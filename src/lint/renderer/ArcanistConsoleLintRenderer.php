@@ -113,7 +113,6 @@ final class ArcanistConsoleLintRenderer extends ArcanistLintRenderer {
 
     $original = $message->getOriginalText();
     $original = phutil_string_cast($original);
-
     $replacement = $message->getReplacementText();
 
     $line = $message->getLine();
