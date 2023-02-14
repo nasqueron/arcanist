@@ -6,6 +6,8 @@
  */
 final class ArcanistFlake8Linter extends ArcanistExternalLinter {
 
+  private $builtins;
+
   public function getInfoName() {
     return 'Python Flake8 multi-linter';
   }
@@ -27,6 +29,38 @@ final class ArcanistFlake8Linter extends ArcanistExternalLinter {
 
   public function getLinterConfigurationName() {
     return 'flake8';
+  }
+
+  public function getLinterConfigurationOptions() {
+    $options = array(
+      'flake8.builtins' => array(
+        'type' => 'optional list<string>',
+        'help' => pht('The list of builtins keywords. Used as allowlist for F821.'),
+      ),
+    );
+
+    return $options + parent::getLinterConfigurationOptions();
+  }
+
+  public function setLinterConfigurationValue($key, $value) {
+    switch ($key) {
+      case 'flake8.builtins':
+        $this->builtins = $value;
+        return;
+
+      default:
+        return parent::setLinterConfigurationValue($key, $value);
+    }
+  }
+
+  public function getMandatoryFlags() {
+    $options = [];
+
+    if ($this->builtins) {
+      $options[] = '--builtins=' . join(",", $this->builtins);
+    }
+
+    return $options;
   }
 
   public function getDefaultBinary() {
