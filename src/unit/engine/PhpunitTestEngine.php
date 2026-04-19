@@ -56,6 +56,8 @@ final class PhpunitTestEngine extends ArcanistUnitTestEngine {
       $clover_tmp = null;
       $clover = null;
       if ($this->getEnableCoverage() !== false) {
+        putenv("XDEBUG_MODE=coverage");
+
         $clover_tmp = new TempFile();
         $clover = csprintf('--coverage-clover %s', $clover_tmp);
       }
